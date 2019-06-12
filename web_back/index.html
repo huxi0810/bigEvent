@@ -101,7 +101,31 @@
               $('.level02').children().eq(n).addClass('active').siblings().removeClass('active');
            }
         }
+        
 
+
+        /*
+        请求地址：http://localhost:8000/admin/logout 网络地址: https://autumnfish.cn/big/admin/logout
+        请求方式：post
+        请求参数：无
+        返回数据：无
+        */
+
+        $('.user_center_link>a:last').on('click',function(e){
+            e.preventDefault();
+
+            $.ajax({
+                type:'post',
+                url:'https://autumnfish.cn/big/admin/logout',
+                success:function(backData){
+                    if(backData.code = 200){
+                        alert('退出失败')
+                    }else{
+                        window.location.href = 'login.html';
+                    }
+                }
+            })
+        })
     </script>
 
 </body>
