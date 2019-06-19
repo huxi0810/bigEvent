@@ -24,19 +24,20 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control username" id="inputEmail3" value="李思思">
+                        <input type="text" name="username" class="form-control username" id="inputEmail3" value="李思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control nickname" id="inputEmail3" value="思思">
+                        <input type="text" name="nickname" class="form-control nickname" id="inputEmail3" value="思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control email" id="inputEmail3" value="lisisi@126.com">
+                        <input type="text" name="email" class="form-control email" id="inputEmail3"
+                            value="lisisi@126.com">
                     </div>
                 </div>
 
@@ -44,14 +45,15 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
                         <img src="images/2.jpg" alt="" class="user_pic">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" name="user_pic" id="exampleInputFile">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
                     <div class="col-sm-4">
-                        <input type="password" class="form-control password" id="inputEmail3" value="12345678">
+                        <input type="password" name="password" class="form-control password" id="inputEmail3"
+                            value="12345678">
                     </div>
                 </div>
 
@@ -65,7 +67,7 @@
         </div>
     </div>
 
-
+    <script src="./js/index.js"></script>
     <script>
         $(function () {
 
@@ -83,25 +85,37 @@
             password string 用户密码
             */
 
-            $.ajax({
-                type: 'get',
-                url: 'http://localhost:8000/admin/userinfo_get',
-                success: function (backData) {
-                    // console.log(backData);
-                    // $('.username').val(backData.data.username);
-                    // $('.nickname').val(backData.data.nickname);
-                    // $('.email').val(backData.data.email);
-                    // $('.user_pic').val(backData.data.user_pic);
-                    // $('.password').val(backData.data.password);
+            function user() {
+                $.ajax({
+                    type: 'get',
+                    url: 'http://localhost:8000/admin/userinfo_get',
+                    success: function (backData) {
+                        // console.log(backData);
+                        // $('.username').val(backData.data.username);
+                        // $('.nickname').val(backData.data.nickname);
+                        // $('.email').val(backData.data.email);
+                        // $('.user_pic').val(backData.data.user_pic);
+                        // $('.password').val(backData.data.password);
 
-                    for (var key in backData.data) {
-                        $('input.' + key).val(backData.data[key]);
+                        for (var key in backData.data) {
+                            $('input.' + key).val(backData.data[key]);
+                        }
+                        $('img.user_pic').attr('src', backData.data.user_pic);
                     }
-                    $('img.user_pic').attr('src', backData.data.user_pic);
-                }
+                })
+            }
+            user();
+
+
+            $('#exampleInputFile').on('change',function(){
+                var img = $(this)[0].files[0];  //files只能由dom对象点出
+                // var img = this.files[0];
+                console.log(img);
+                var url = URL.createObjectURL(img);
+                console.log(url);
+                
+                $('.user_pic').attr('src',url); 
             })
-
-
 
 
 
@@ -133,9 +147,11 @@
                         console.log(backData);
                         if (backData.code == 200) {
                             console.log('修改成功!');
+                            personData();
                         }
                     }
                 })
+             
             })
 
 

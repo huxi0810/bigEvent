@@ -151,6 +151,7 @@
         */
 
         $(function () {
+            
             $.ajax({
                 type: 'get',
                 url: 'http://localhost:8000/admin/getuser',
@@ -161,6 +162,7 @@
                     $('.user_center_link img').attr('src', backData.data.user_pic);
                 }
             })
+
         })
     </script>
 

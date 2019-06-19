@@ -27,7 +27,7 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" value="文章标题文字">
+                        <input type="text" class="form-control" id="input_txt" value="文章标题文字">
                     </div>
                 </div>
                 <div class="form-group">
@@ -40,7 +40,7 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
+                        <select class="form-control" id="input_slug">
                             <option>类别一</option>
                             <option>类别二</option>
                             <option>类别三</option>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
+                    <label for="inputEmail3" class="col-sm-2 control-label">文章内容:</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="rich_content" name="content" placeholder="文章内容" value="文章内容">
                     </div>
@@ -78,6 +78,96 @@
         </div>
     </div>
 
+
+
+    <script src="./js//template-web.js"></script>
+    <script id="tmp-list-edit" type="text/html">
+        <option value="">所有分类</option>
+        {{each data v}}
+        <option value={{v.id}}>{{v.name}}</option>
+        {{/each}}
+    </script>
+    <script>
+        $(function () {
+
+            $.ajax({
+                type: 'get',
+                url: 'http://localhost:8000/admin/category_search',
+                success: function (backData) {
+                    if (backData.code == 200) {
+                        // console.log(backData);
+                        var xhrHtml = template('tmp-list-edit', backData);
+                        $('.form-control').html(xhrHtml);
+                    }
+                }
+            })
+
+
+
+            var id = window.location.href.split('=')[1];
+            // console.log(id);
+
+            $.ajax({
+                url: 'http://localhost:8000/admin/search',
+                data: {
+                    id: id
+                },
+                success: function (backData) {
+                    if (backData.code == 200) {
+                        // console.log(backData);
+                        $("#input_txt").val(backData.data.title);
+                        $('.article_cover').attr("src", backData.data.cover);
+                        $('#input_slug').val(backData.data.type);
+                        $('#dateinput').val(backData.data.date);
+                        $("#rich_content").val(backData.data.content)
+                    }
+                }
+            })
+
+
+
+
+            /*
+            文章编辑
+            请求地址：http://localhost:8000/admin/article_edit 网络地址: https://autumnfish.cn/big/admin/article_edit
+            请求方式：post
+            请求参数：
+            名称 类型 说明
+            id number 文章 id
+            title string 文章标题
+            cover file 文章封面图片
+            type number 文章类型 id
+            date string 日期
+            content string 文章内容
+            */
+
+            $('.btn-success').on('click', function (e) {
+                e.preventDefault();
+
+                //发送ajax请求.
+                $.ajax({
+                    type: 'post',
+                    url: 'https://autumnfish.cn/big/admin/article_edit',
+                    data: {
+                        id: id,
+                        title: $("#input_txt").val(),
+                        cover: $('.article_cover').attr("src"),
+                        type: $('#input_slug').val(),
+                        date: $('#dateinput').val(),
+                        content: $("#rich_content").val()
+                    },
+                    success: function (backData) {
+                        // console.log(backData);
+                        if (backData.code == 200) {
+                            alert('修改成功!!!')
+                        }
+                    }
+                });
+            });
+
+
+        })
+    </script>
 </body>
 
 </html>
